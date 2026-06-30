@@ -43,10 +43,12 @@ button.addEventListener("click", async function() {
 
         let clima = await respuesta2.json();
         contenedor.innerHTML += `
+        <div class="card">
             <p>Nombre: ${nombre}</p>
             <p>Temperatura: ${clima.current_weather.temperature}</p>
             <p>Viento: ${clima.current_weather.windspeed}</p>
             <p>Codigo del clima: ${clima.current_weather.weathercode}</p>
+        </div>
         `;
 
         estado.textContent = "Clima obtenido correctamente";
