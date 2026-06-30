@@ -1,37 +1,47 @@
-let firsturl = " https://geocoding-api.open-meteo.com/v1/search?name=CIUDAD&count=1";
-let secondurl = "https://api.open-meteo.com/v1/forecast?latitude=LAT&longitude=LON&current_weather=true}";
 let button = document.getElementById("btnClima");
-let ciudad = document.getElementById("ciudad");
+let input = document.getElementById("ciudad");
 let estado = document.getElementById("estado");
 let contenedor = document.getElementById("contenedor");
 
-button.addEventListener("click", function() {
-
+button.addEventListener("click", async function() {
+    
     try{
+        let firsturl = "https://geocoding-api.open-meteo.com/v1/search?name=CIUDAD&count=1";
+        let secondurl = "https://api.open-meteo.com/v1/forecast?latitude=LAT&longitude=LON&current_weather=true}";
+
         estado.textContent = "Cargando...";
         contenedor.innerHTML = "";
-        let ciudadValue = ciudad.value;
+        let ciudadValue = input.value;
         let urlFinal = firsturl.replace("CIUDAD", ciudadValue);
 
-        let respuesta = fetch(urlFinal);
+        console.log(urlFinal);
+
+        let respuesta = await fetch(urlFinal);
         if(!respuesta.ok){
             throw new Error("Ciudad no encontrada");
         }
 
-        let ciudad = respuesta.json();
-        var longitud = ciudad.longitude;
-        var latitud = ciudad.latitude;
+        let ciudad = await respuesta.json();
+        let longitud = "";
+        let latitud = "";
+
+        for(let i = 0; i < ciudad.results.length; i++){
+                longitud = ciudad.results[i].longitude;
+                latitud = ciudad.results[i].latitude;
+                break;
+        }
 
         let urlFinal2 = secondurl.replace("LAT", latitud).replace("LON", longitud);
+        console.log(urlFinal2);
 
-        let respuesta2 = fetch(urlFinal2);
+        let respuesta2 = await fetch(urlFinal2);
         if(!respuesta2.ok){
             throw new Error("Error en la solicitud");
         }
 
-        let clima = respuesta2.json();
+        let clima = await respuesta2.json();
         contenedor.innerHTML += `
-            <p>Nombre: ${ciudad.name}</p>
+            <p>Nombre: ${respuesta.name}</p>
             <p>Temperatura: ${clima.current_weather.temperature}</p>
             <p>Viento: ${clima.current_weather.windspeed}</p>
             <p>Codigo del clima: ${clima.current_weather.weathercode}</p>
