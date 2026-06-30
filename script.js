@@ -7,7 +7,7 @@ button.addEventListener("click", async function() {
     
     try{
         let firsturl = "https://geocoding-api.open-meteo.com/v1/search?name=CIUDAD&count=1";
-        let secondurl = "https://api.open-meteo.com/v1/forecast?latitude=LAT&longitude=LON&current_weather=true}";
+        let secondurl = "https://api.open-meteo.com/v1/forecast?latitude=LAT&longitude=LON&current_weather=true";
 
         estado.textContent = "Cargando...";
         contenedor.innerHTML = "";
@@ -24,8 +24,10 @@ button.addEventListener("click", async function() {
         let ciudad = await respuesta.json();
         let longitud = "";
         let latitud = "";
+        let nombre = "";
 
         for(let i = 0; i < ciudad.results.length; i++){
+                nombre = ciudad.results[i].name;
                 longitud = ciudad.results[i].longitude;
                 latitud = ciudad.results[i].latitude;
                 break;
@@ -41,7 +43,7 @@ button.addEventListener("click", async function() {
 
         let clima = await respuesta2.json();
         contenedor.innerHTML += `
-            <p>Nombre: ${respuesta.name}</p>
+            <p>Nombre: ${nombre}</p>
             <p>Temperatura: ${clima.current_weather.temperature}</p>
             <p>Viento: ${clima.current_weather.windspeed}</p>
             <p>Codigo del clima: ${clima.current_weather.weathercode}</p>
